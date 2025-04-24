@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch
+    container_name: opensearch-node1
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true # lock memory to prevent swapping
+      - DISABLE_SECURITY_PLUGIN=true # disable built-in security for dev
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - plugins.security.disabledtrue
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance analyzer
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards
+    container_name: opensearch-dashboards
+    environment:
+      - OPENSEARCH_HOSTS=http://opensearch-node1:9200
+      - DISABLE_SECURITY_PLUGIN=true # match backend
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    ports:
+      - 5601:5601 # Dashboard UI
+    depends_on:
+      - opensearch
+
+volumes:
+  opensearch-data:
