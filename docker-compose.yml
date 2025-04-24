@@ -32,5 +32,14 @@ services:
     depends_on:
       - opensearch
 
+  fluentd:
+    container_name: fluentd
+    build:
+      context: ./fluentd
+    ports:
+      - "9880:9880"
+    depends_on:
+      - opensearch
+
 volumes:
   opensearch-data:
