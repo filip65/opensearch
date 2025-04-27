@@ -38,6 +38,7 @@ services:
       context: ./fluentd
     ports:
       - "9880:9880"
+      - "24224:24224"
     depends_on:
       - opensearch
 
